@@ -35,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException("User not found");
         }
-        
+
         Item item = ItemMapper.toItem(itemDto);
         item.setId(idGenerator.getAndIncrement());
         User owner = new User();
@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
         if (!item.getOwner().getId().equals(ownerId)) {
             throw new ItemNotFoundException("Only owner can update item");
         }
-        
+
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
-        
+
         items.put(itemId, item);
         return ItemMapper.toItemDto(item);
     }
@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isBlank()) {
             return new ArrayList<>();
         }
-        
+
         return items.values().stream()
                 .filter(item -> item.getAvailable() != null && item.getAvailable())
                 .filter(item -> {
@@ -99,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
                     String name = item.getName();
                     String description = item.getDescription();
                     return (name != null && name.toLowerCase().contains(text.toLowerCase())) ||
-                           (description != null && description.toLowerCase().contains(text.toLowerCase()));
+                            (description != null && description.toLowerCase().contains(text.toLowerCase()));
                 })
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());

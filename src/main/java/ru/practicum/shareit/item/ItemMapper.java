@@ -22,7 +22,7 @@ public class ItemMapper {
         item.setAvailable(itemDto.getAvailable());
         return item;
     }
-    
+
     public static Item toItem(ItemDto itemDto, User owner) {
         Item item = toItem(itemDto);
         item.setOwner(owner);

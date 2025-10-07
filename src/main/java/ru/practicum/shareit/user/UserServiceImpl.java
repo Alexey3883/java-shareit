@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
     private final Map<Long, User> users = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
-    
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
-        "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+                    "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
     );
 
     @Override
@@ -28,19 +28,19 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
             throw new IllegalArgumentException("Email cannot be empty");
         }
-        
+
         // Проверка формата email
         if (!EMAIL_PATTERN.matcher(userDto.getEmail()).matches()) {
             throw new IllegalArgumentException("Invalid email format");
         }
-        
+
         // Проверка на уникальность email
         for (User existingUser : users.values()) {
             if (userDto.getEmail().equals(existingUser.getEmail())) {
                 throw new UserAlreadyExistsException("Email already exists");
             }
         }
-        
+
         User user = UserMapper.toUser(userDto);
         user.setId(idGenerator.getAndIncrement());
         users.put(user.getId(), user);
@@ -53,14 +53,14 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserNotFoundException("User not found");
         }
-        
+
         // Проверка email на уникальность
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
             // Проверка формата email
             if (!EMAIL_PATTERN.matcher(userDto.getEmail()).matches()) {
                 throw new IllegalArgumentException("Invalid email format");
             }
-            
+
             // Проверка на уникальность email (если он изменился)
             if (!userDto.getEmail().equals(user.getEmail())) {
                 for (User existingUser : users.values()) {
@@ -69,14 +69,14 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             }
-            
+
             user.setEmail(userDto.getEmail());
         }
-        
+
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
-        
+
         users.put(id, user);
         return UserMapper.toUserDto(user);
     }

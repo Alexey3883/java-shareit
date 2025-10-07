@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
-    
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
-        "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+                    "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
     );
 
     @Autowired
@@ -29,11 +29,11 @@ public class UserController {
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
             throw new IllegalArgumentException("Email cannot be empty");
         }
-        
+
         if (!EMAIL_PATTERN.matcher(userDto.getEmail()).matches()) {
             throw new IllegalArgumentException("Invalid email format");
         }
-        
+
         return ResponseEntity.ok(userService.createUser(userDto));
     }
 
@@ -45,7 +45,7 @@ public class UserController {
                 throw new IllegalArgumentException("Invalid email format");
             }
         }
-        
+
         return ResponseEntity.ok(userService.updateUser(id, userDto));
     }
 

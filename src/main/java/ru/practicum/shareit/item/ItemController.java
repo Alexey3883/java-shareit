@@ -24,15 +24,15 @@ public class ItemController {
         if (itemDto.getName() == null || itemDto.getName().isBlank()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        
+
         if (itemDto.getDescription() == null || itemDto.getDescription().isBlank()) {
             throw new IllegalArgumentException("Description cannot be empty");
         }
-        
+
         if (itemDto.getAvailable() == null) {
             throw new IllegalArgumentException("Available field is required");
         }
-        
+
         return ResponseEntity.ok(itemService.createItem(itemDto, ownerId));
     }
 
