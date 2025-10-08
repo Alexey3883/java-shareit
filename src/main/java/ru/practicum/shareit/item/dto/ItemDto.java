@@ -1,9 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ItemDto {
     private Long id;
+
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+
+    @NotBlank(message = "Description cannot be empty")
     private String description;
+
+    @NotNull(message = "Available field is required")
     private Boolean available;
 
     public ItemDto() {
@@ -47,4 +56,5 @@ public class ItemDto {
     public void setAvailable(Boolean available) {
         this.available = available;
     }
+
 }

@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.UserNotFoundException;
@@ -17,32 +17,27 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final Map<Long, Item> items = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
     private final UserService userService;
 
-    @Autowired
-    public ItemServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
-
     @Override
     public ItemDto createItem(ItemDto itemDto, Long ownerId) {
-        // Проверка существования пользователя
         try {
             userService.getUserById(ownerId);
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException("User not found");
         }
 
-        Item item = ItemMapper.toItem(itemDto);
+        Item item = ItemMapper.toEntity(itemDto);
         item.setId(idGenerator.getAndIncrement());
         User owner = new User();
         owner.setId(ownerId);
         item.setOwner(owner);
         items.put(item.getId(), item);
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toDto(item);
     }
 
     @Override
@@ -66,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         items.put(itemId, item);
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toDto(item);
     }
 
     @Override
@@ -75,14 +70,14 @@ public class ItemServiceImpl implements ItemService {
         if (item == null) {
             throw new ItemNotFoundException("Item not found");
         }
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toDto(item);
     }
 
     @Override
     public List<ItemDto> getItemsByOwner(Long ownerId) {
         return items.values().stream()
                 .filter(item -> item.getOwner().getId().equals(ownerId))
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
                     return (name != null && name.toLowerCase().contains(text.toLowerCase())) ||
                             (description != null && description.toLowerCase().contains(text.toLowerCase()));
                 })
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 

@@ -1,38 +1,22 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
-
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                              @RequestBody ItemDto itemDto) {
-        // Валидация полей
-        if (itemDto.getName() == null || itemDto.getName().isBlank()) {
-            throw new IllegalArgumentException("Name cannot be empty");
-        }
-
-        if (itemDto.getDescription() == null || itemDto.getDescription().isBlank()) {
-            throw new IllegalArgumentException("Description cannot be empty");
-        }
-
-        if (itemDto.getAvailable() == null) {
-            throw new IllegalArgumentException("Available field is required");
-        }
-
+                                              @Valid @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(itemService.createItem(itemDto, ownerId));
     }
 
